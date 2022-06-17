@@ -1,4 +1,4 @@
-void P1();
-void P2();
-int P3(int n);
-int P4(int n);
+void P17_1();
+void P17_2();
+int P17_3(int n);
+int P17_4(int n);

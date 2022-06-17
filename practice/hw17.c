@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-void P1(){
+void P17_1(){
     int num;
     printf("Enter any natural number:");
     scanf("%d", &num);
     printf("ans:%d\n", num % 3 == 0 ? 1 : 0);
 }
 
-void P2(){
+void P17_2(){
     char ch;
     printf("Enter any alphabet:");
     scanf("%c", &ch);
@@ -16,7 +16,7 @@ void P2(){
     }
 }
 
-int P3(int n){
+int P17_3(int n){
     int x = 1, y = 1;
     for(int i = 1; i < n; i++){
         int t = y;
@@ -26,7 +26,7 @@ int P3(int n){
     return y;
 }
 
-int P4(int n){
+int P17_4(int n){
     int r = 0, f = 1;
     while(n > 0){
         r += (n % 4) * f;
