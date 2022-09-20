@@ -5,8 +5,9 @@
 #include "hw18.h"
 #include "hw19.h"
 #include "hw20.h"
+#include "hw21.h"
 
-#define HWNO 20
+#define HWNO 21
 
 void hw17(int q, char **argv){
     switch(q){
@@ -84,15 +85,26 @@ void hw20(int q, char **argv){
     }
 }
 
+void hw21(int q, int argc, char **argv){
+    if(q == 1){
+        int iargv[argc];
+        for(int i = 0; i < argc; i++) iargv[i] = atoi(argv[i]);
+        P21_1(argc, iargv);
+    }
+    else if(q == 2){
+        P21_2(argv[0]);
+    }
+}
 int main() {
-    int argc = 2;
-    char *argv[] = {"../lib/P3_input2.txt", "../out/P3_output2.txt"};
+    int argc = 1;
+    char *argv[] = {"({[]})(){[(]})"};
 
     switch(HWNO){
         case 17: hw17(4, argv); break;
         case 18: hw18(4, argv); break;
         case 19: hw19(5, argc, argv); break;
         case 20: hw20(3, argv); break;
+        case 21: hw21(2, argc, argv); break;
     }
     return 0;
 }
