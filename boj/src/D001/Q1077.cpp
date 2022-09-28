@@ -50,10 +50,6 @@ Point* intersection(const Line& lp, const Line& lq) {
     return p;
 }
 
-double dist(const Point& p1, const Point& p2){
-    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
-}
-
 double ccw(const Point& p1, const Point& p2, const Point& p3){
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
@@ -109,22 +105,28 @@ int main() {
     for (const Point& point : p1.points) if (inside(p2, point)) overlap.push_back(point);
     for (const Point& point : p2.points) if (inside(p1, point)) overlap.push_back(point);
 
-    sort(overlap.begin(), overlap.end(), [](const Point& p1, const Point& p2){
-        Point ori = {0, 0};
-        double dir = ccw(ori, p1, p2);
-        if(dir == 0) return dist(ori, p1) < dist(ori, p2);
-        return dir > 0;
+    if(overlap.empty()){
+        cout << 0;
+        return 0;
+    }
+
+    vector<Point> sorted;
+    for(int i = 1; i < overlap.size(); i++) sorted.push_back(overlap[i]);
+    sort(sorted.begin(), sorted.end(), [&overlap](const Point& p1, const Point& p2){
+        Point ori = overlap[0];
+        return ccw(ori, p1, p2) > 0;
     });
+    sorted.insert(sorted.begin(), overlap[0]);
 
     Polygon overlapPolygon;
-    for(const Point& point : overlap) {
+    for(const Point& point : sorted) {
         if(overlapPolygon.points.size() > 1)
             if(ccw(overlapPolygon.points[overlapPolygon.points.size() - 2], overlapPolygon.points.back(), point) == 0)
                 overlapPolygon.points.pop_back();
         overlapPolygon.points.push_back(point);
     }
 
-    if(overlap.size() < 3){
+    if(overlapPolygon.points.size() < 3){
         cout << 0.0;
         return 0;
     }
