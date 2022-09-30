@@ -1,0 +1,33 @@
+#!/bin/bash
+# ./task [BOJ_ID]
+
+if [ "$#" -ne 1 ]
+then
+	echo "USAGE: ./task [BOJ_ID]"
+	exit 1
+fi
+BOJ=$1
+
+# locate files
+TMP=$(dirname $0)/..
+DIR=$(cd $TMP; pwd)
+CMK=$DIR/CMakeLists.txt
+SID=$(printf "%03d" $(echo "$BOJ / 100 - 9" | bc))
+CPP=$DIR/src/D$SID/Q$BOJ.cpp
+
+# generate .cpp if not exists
+if [ ! -d $DIR/src/D$SID ]
+then
+	mkdir -p $DIR/src/D$SID
+fi
+if [ ! -f $CPP ]
+then
+	cp $DIR/tool/skel.cpp $CPP
+fi
+
+# modify cmake list
+OLD=$(grep -oE "src.*cpp" $CMK)
+ODP=$(echo $OLD | cut -d'/' -f2)
+OCP=$(echo $OLD | cut -d'/' -f3)
+sed "s/$ODP/D$SID/g" $(echo $CMK) | sed "s/$OCP/Q$BOJ.cpp/g" > $DIR/.cmk
+mv $DIR/.cmk $CMK
