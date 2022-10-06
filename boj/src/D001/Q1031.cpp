@@ -26,6 +26,7 @@ int max_flow(int src, int snk){
 
     while(true){
         vector<int> parent(MAX, -1);
+        while(!Q.empty()) Q.pop();
         Q.push(src);
 
         while(!Q.empty() && parent[snk] == -1){
@@ -50,6 +51,35 @@ int max_flow(int src, int snk){
     return total;
 }
 
+// fix flow if possible
+void fix_flow(int s, int e){
+    vector<int> parent(MAX, -1);
+    while(!Q.empty()) Q.pop();
+    Q.push(s);
+
+    // find flow
+    while(!Q.empty() && parent[e] == -1){
+        int cur = Q.front(); Q.pop();
+        for(int nxt : graph[cur]){
+            // reject if this flow violates the order
+            if(cur < s || (cur == s && nxt < e)) continue;
+            if(cap[cur][nxt] - flo[cur][nxt] > 0 && parent[nxt] == -1){
+                parent[nxt] = cur;
+                Q.push(nxt);
+                if(nxt == e) break;
+            }
+        }
+    }
+    if(parent[e] == -1) return;
+
+    // fix flow
+    for(int i = e; i != s; i = parent[i]){
+        flo[parent[i]][i]++;
+        flo[i][parent[i]]--;
+    }
+    cap[s][e] = cap[e][s] = flo[s][e] = flo[e][s] = 0;
+}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
@@ -58,12 +88,27 @@ int main() {
     cin >> N >> M;
 
     // connect source to players of team 1
-    for(int i = 0; i < N; i++) cin >> t, add_edge(SRC, i, t);
+    int oflo = 0, iflo = 0;
+    for(int i = 0; i < N; i++) cin >> t, add_edge(SRC, i, t), oflo += t;
     // connect players of team 2 to sink
-    for(int j = 0; j < M; j++) cin >> t, add_edge(N+j, SNK, t);
+    for(int j = 0; j < M; j++) cin >> t, add_edge(N+j, SNK, t), iflo += t;
+    // sanity check
+    if(oflo != iflo) return cout << -1, 0;
     // connect players of team 1 to players of team 2
-    for(int i = 0; i < N; i++) for(int j = N+i; j < N+M; j++) add_edge(i, j, 1);
+    for(int i = 0; i < N; i++) for(int j = N; j < N+M; j++) add_edge(i, j, 1);
 
     // find maximum flow
-    if(max_flow(SRC, SNK) )
+    if(max_flow(SRC, SNK) != iflo) return cout << -1, 0;
+
+    // fix flow to find minimum matchup
+    for(int i = 0; i < N; i++) for(int j = N; j < N+M; j++) if(flo[i][j]) fix_flow(i, j);
+
+    // print result
+    for(int i = 0; i < N; i++) {
+        for(int j = N; j < N+M; j++) {
+            if(flo[i][j]) cout << 1;
+            else cout << 0;
+        }
+        cout << '\n';
+    }
 }
