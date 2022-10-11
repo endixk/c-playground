@@ -13,12 +13,12 @@ TMP=$(dirname $0)/..
 DIR=$(cd $TMP; pwd)
 CMK=$DIR/CMakeLists.txt
 SID=$(printf "%04d" $(echo "$BOJ / 100" | bc))
-CPP=$DIR/src/D$SID/Q$BOJ.cpp
+CPP=$DIR/src/$SID/Q$BOJ.cpp
 
 # generate .cpp if not exists
-if [ ! -d $DIR/src/D$SID ]
+if [ ! -d $DIR/src/$SID ]
 then
-	mkdir -p $DIR/src/D$SID
+	mkdir -p $DIR/src/$SID
 fi
 if [ ! -f $CPP ]
 then
