@@ -8,23 +8,30 @@ using namespace std;
 #define MAX 2
 #define INF 999999999
 
-int N, M, flo[MAX][MAX], cap[MAX][MAX];
-vector<int> adj[MAX];
+struct Edge {
+    int dst, flo, cap, rev;
+    Edge(int dst, int flo, int cap, int rev) : dst(dst), flo(flo), cap(cap), rev(rev) {}
+};
+vector<Edge> adj[MAX];
 
+// Edmonds-Karp
 queue<int> Q;
 int mflo;
 void max_flow(){
     while(true){
-        int prev[MAX];
+        int prev[MAX], pidx[MAX];
         memset(prev, -1, sizeof(prev));
-        prev[SRC] = SRC; Q.push(SRC);
+        memset(pidx, -1, sizeof(pidx));
+        prev[SRC] = pidx[SRC] = SRC; Q.push(SRC);
 
         // find path
         while(!Q.empty()){
             int cur = Q.front(); Q.pop();
-            for(int nxt : adj[cur]){
-                if(prev[nxt] == -1 && cap[cur][nxt] - flo[cur][nxt] > 0){
+            for(int i=0; i<adj[cur].size(); i++){
+                int nxt = adj[cur][i].dst;
+                if(prev[nxt] == -1 && adj[cur][i].cap - adj[cur][i].flo > 0){
                     prev[nxt] = cur;
+                    pidx[nxt] = i;
                     Q.push(nxt);
                     if(nxt == SNK) break;
                 }
@@ -34,12 +41,12 @@ void max_flow(){
 
         // find min-flow
         int flow = INF;
-        for(int i=SNK; i!=SRC; i=prev[i]) flow = min(flow, cap[prev[i]][i] - flo[prev[i]][i]);
+        for(int i=SNK; i!=SRC; i=prev[i]) flow = min(flow, adj[prev[i]][pidx[i]].cap - adj[prev[i]][pidx[i]].flo);
 
         // update flow
         for(int i=SNK; i!=SRC; i=prev[i]){
-            flo[prev[i]][i] += flow;
-            flo[i][prev[i]] -= flow;
+            adj[prev[i]][pidx[i]].flo += flow;
+            adj[i][adj[prev[i]][pidx[i]].rev].flo -= flow;
         }
         mflo += flow;
     }
