@@ -5,7 +5,8 @@
   * More to come...
 
 ### solved.ac [#](https://solved.ac/profile/blast)
-![solved.ac profile](http://mazandi.herokuapp.com/api?handle=blast&theme=dark)
+![mazassumnida](http://mazassumnida.wtf/api/v2/generate_badge?boj=blast)
+![mazandi](http://mazandi.herokuapp.com/api?handle=blast&theme=dark)
 
 ### Unsolved source codes
 * BOJ
