@@ -1,4 +1,4 @@
-// BOJ **** []
+// BOJ ---- []
 // Supported by GitHub Copilot
 
 #include <bits/stdc++.h>

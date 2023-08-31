@@ -9,25 +9,25 @@ fi
 BOJ=$1
 
 # locate files
-TMP=$(dirname $0)/..
-DIR=$(cd $TMP; pwd)
+TMP=$(dirname "$0")/..
+DIR=$(cd "$TMP" || exit 1; pwd)
 CMK=$DIR/CMakeLists.txt
-SID=$(printf "%04d" $(echo "$BOJ / 100" | bc))
+SID=$(printf "%04d" "$(echo "$BOJ / 100" | bc)")
 CPP=$DIR/src/$SID/Q$BOJ.cpp
 
 # generate .cpp if not exists
-if [ ! -d $DIR/src/$SID ]
+if [ ! -d "$DIR"/src/"$SID" ]
 then
-	mkdir -p $DIR/src/$SID
+	mkdir -p "$DIR"/src/"$SID"
 fi
-if [ ! -f $CPP ]
+if [ ! -f "$CPP" ]
 then
-	cp $DIR/tool/skel.cpp $CPP
+	sed "s/----/$BOJ/g" "$DIR"/tool/skel.cpp > "$CPP"
 fi
 
 # modify cmake list
-OLD=$(grep -oE "src.*cpp" $CMK)
-ODP=$(echo $OLD | cut -d'/' -f2)
-OCP=$(echo $OLD | cut -d'/' -f3)
-sed "s/$ODP/$SID/g" $(echo $CMK) | sed "s/$OCP/Q$BOJ.cpp/g" > $DIR/.cmk
-mv $DIR/.cmk $CMK
+OLD=$(grep -oE "src.*cpp" "$CMK")
+ODP=$(echo "$OLD" | cut -d'/' -f2)
+OCP=$(echo "$OLD" | cut -d'/' -f3)
+sed "s/$ODP/$SID/g" "$CMK" | sed "s/$OCP/Q$BOJ.cpp/g" > "$DIR"/.cmk
+mv "$DIR"/.cmk "$CMK"
